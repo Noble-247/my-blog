@@ -2,13 +2,14 @@ import getFormattedDate from "@/lib/getFormattedDate";
 import { getPostData, getSortedPostsData } from "@/lib/posts";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FaArrowLeft } from "react-icons/fa";
 
-export async function generateMetaData({
-  params,
-}: {
-  params: { postId: string };
-}) {
+export function generateStaticParams() {
+  const posts = getSortedPostsData();
+
+  return posts.map((post) => ({ postId: post.id }));
+}
+
+export function generateMetadata({ params }: { params: { postId: string } }) {
   const posts = getSortedPostsData();
   const { postId } = params;
 
@@ -22,7 +23,6 @@ export async function generateMetaData({
 
   return {
     title: post.title,
-    description: post.id,
   };
 }
 
@@ -45,9 +45,7 @@ export default async function Post({ params }: { params: { postId: string } }) {
       <article>
         <section dangerouslySetInnerHTML={{ __html: contentHtml }} />
         <p>
-          <Link href={"/"}>
-            <FaArrowLeft /> Back to Home
-          </Link>
+          <Link href={"/"}>Back to Home</Link>
         </p>
       </article>
     </main>
